@@ -7,31 +7,35 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
+import { MoviesService } from './movies.service';
 
 @Controller('movies')
 export class MoviesController {
+  constructor(private readonly moviesSurvice: MoviesService) {}
+
   @Get()
   getAll() {
-    return 'all movies';
+    return this.moviesSurvice.getAll();
   }
 
-  @Get()
-  search(@Query('yaer') searchYear: string) {
-    return 'dd';
+  @Get('search')
+  search(@Query('keyword') keyword: string) {
+    return this.moviesSurvice.searchMovie(keyword);
   }
 
-  @Get('/:id')
+  @Get(':id')
   getOne(@Param('id') id: string) {
-    return `${id}`;
+    return this.moviesSurvice.getOne(parseInt(id));
   }
 
   @Post()
-  create() {
-    return 'create a movie';
+  create(@Body() movie: Movie) {
+    return this.moviesSurvice.createMovie(movie);
   }
 
-  @Delete('/:id')
-  remove() {
-    return 'delete a movie';
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.moviesSurvice.deleteOne(parseInt(id));
   }
 }

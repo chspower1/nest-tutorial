@@ -1,41 +1,28 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
-import { Movie } from './entities/movie.entity';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Movie } from './entities/movie';
 import { MoviesService } from './movies.service';
 
 @Controller('movies')
 export class MoviesController {
-  constructor(private readonly moviesSurvice: MoviesService) {}
-
+  constructor(private readonly moviesService: MoviesService) {}
   @Get()
-  getAll() {
-    return this.moviesSurvice.getAll();
+  getMovies() {
+    return this.moviesService.getMovies();
   }
 
-  @Get('search')
-  search(@Query('keyword') keyword: string) {
-    return this.moviesSurvice.searchMovie(keyword);
-  }
-
-  @Get(':id')
-  getOne(@Param('id') id: string) {
-    return this.moviesSurvice.getOne(parseInt(id));
-  }
-
-  @Post()
-  create(@Body() movie: Movie) {
-    return this.moviesSurvice.createMovie(movie);
+  @Get('/:id')
+  getMovie(@Param('id') id: number) {
+    console.log(typeof id);
+    return this.moviesService.getMovie(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.moviesSurvice.deleteOne(parseInt(id));
+  deleteMovie(@Param('id') id: number): Movie[] {
+    return this.moviesService.deleteMovie(id);
+  }
+
+  @Post()
+  createMovie(@Body() movieData): Movie[] {
+    return this.moviesService.createMovie(movieData);
   }
 }

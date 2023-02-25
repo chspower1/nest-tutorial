@@ -1,60 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import { Movie } from './entities/movie.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Movie, MovieData } from './entities/movie';
 
 @Injectable()
 export class MoviesService {
-  private movies: Movie[] = [
-    {
-      id: 1,
-      title: 'hi',
-      description: 'test',
-      year: 1996,
-      genres: ['action'],
-    },
-    {
-      id: 2,
-      title: 'asdasdsa',
-      description: 'test',
-      year: 2000,
-      genres: ['action'],
-    },
-    {
-      id: 3,
-      title: 'ass',
-      description: 'test',
-      year: 3333,
-      genres: ['action'],
-    },
-  ];
-
-  getAll(): Movie[] {
+  private movies: Movie[] = [];
+  getMovies(): Movie[] {
     return this.movies;
   }
-
-  getOne(id: number): Movie {
-    return this.movies.find((movie) => movie.id === id);
-  }
-
-  createMovie(movie: Movie): boolean {
-    if (movie) {
-      this.movies.push(movie);
-      return true;
-    } else return false;
-  }
-
-  deleteOne(id: number): boolean {
-    if (id) {
-      this.movies = this.movies.filter((movie) => movie.id !== id);
-      return true;
-    } else return false;
-  }
-
-  searchMovie(keyword: string): Movie[] {
-    if (keyword) {
-      return this.movies.filter(
-        (movie) =>
-          movie.title.includes(keyword) || movie.description.includes(keyword),
-      );
+  getMovie(id: number): Movie {
+    const movie = this.movies.find((movie) => movie.id === id);
+    if (!movie) {
+      throw new NotFoundException(`Movie with ID ${id} Not Found`);
     }
+    return movie;
+  }
+
+  deleteMovie(id: number): Movie[] {
+    return this.movies.filter((movie) => movie.id !== id);
+  }
+
+  createMovie(movieData: MovieData): Movie[] {
+    this.movies.push({ id: this.movies.length + 1, ...movieData });
+    return this.movies;
   }
 }

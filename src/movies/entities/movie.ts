@@ -1,8 +1,4 @@
-export class MovieData {
-  title: string;
-  description: string;
-}
-export class Movie implements MovieData {
+export class Movie {
   id: number;
   title: string;
   description: string;
